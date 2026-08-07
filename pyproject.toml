@@ -10,6 +10,7 @@ requires-python = ">=3.10"
 
 [project.scripts]
 remote-gui = "remote_gui.cli:main"
+remote-tilix = "remote_gui.cli:tilix_main"
 
 [tool.setuptools]
 package-dir = {"" = "src"}

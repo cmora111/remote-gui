@@ -39,6 +39,19 @@ def launch(host: str, command: list[str]) -> int:
 
     return subprocess.call(ssh_command)
 
+def tilix_main() -> int:
+    parser = argparse.ArgumentParser(
+        description="Launch Tilix remotely over SSH/X11."
+    )
+
+    parser.add_argument(
+        "host",
+        help="SSH host alias, such as spectrix or alienware",
+    )
+
+    args = parser.parse_args()
+
+    return launch(args.host, ["tilix", "--new-process"])
 
 def main() -> int:
     parser = argparse.ArgumentParser(

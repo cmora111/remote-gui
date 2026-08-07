@@ -1,2 +1,3 @@
 [console_scripts]
 remote-gui = remote_gui.cli:main
+remote-tilix = remote_gui.cli:tilix_main
