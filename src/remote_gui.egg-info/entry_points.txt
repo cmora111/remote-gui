@@ -1,0 +1,2 @@
+[console_scripts]
+remote-gui = remote_gui.cli:main

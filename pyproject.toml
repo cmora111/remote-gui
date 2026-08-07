@@ -1,0 +1,18 @@
+[build-system]
+requires = ["setuptools>=77"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "remote-gui"
+version = "0.1.0"
+description = "Launch remote Linux GUI applications safely over SSH X11 forwarding"
+requires-python = ">=3.10"
+
+[project.scripts]
+remote-gui = "remote_gui.cli:main"
+
+[tool.setuptools]
+package-dir = {"" = "src"}
+
+[tool.setuptools.packages.find]
+where = ["src"]

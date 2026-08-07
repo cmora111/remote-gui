@@ -1,0 +1,10 @@
+LICENSE
+README.md
+pyproject.toml
+src/remote_gui/__init__.py
+src/remote_gui/cli.py
+src/remote_gui.egg-info/PKG-INFO
+src/remote_gui.egg-info/SOURCES.txt
+src/remote_gui.egg-info/dependency_links.txt
+src/remote_gui.egg-info/entry_points.txt
+src/remote_gui.egg-info/top_level.txt
