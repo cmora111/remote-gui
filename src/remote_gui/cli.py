@@ -3,6 +3,7 @@
 import argparse
 
 from remote_gui.ssh import launch
+from remote_gui.ssh import launch, run_remote
 
 
 def build_parser() -> argparse.ArgumentParser:
@@ -36,10 +37,7 @@ def doctor_main() -> int:
         description="Check whether a remote host is ready for remote GUI apps.",
     )
 
-    parser.add_argument(
-        "host",
-        help="SSH host alias, for example: spectrix or alienware",
-    )
+    parser.add_argument("host", help="SSH host alias")
 
     parser.add_argument(
         "--debug",
@@ -49,16 +47,38 @@ def doctor_main() -> int:
 
     args = parser.parse_args()
 
-    checks = [
-        "echo DISPLAY=$DISPLAY",
-        "command -v xauth",
-        "command -v dbus-run-session",
-        "command -v bash",
-    ]
+    script = r'''
+FAILED=0
 
-    return launch(
+pass_check() {
+    printf "PASS  %s\n" "$1"
+}
+
+fail_check() {
+    printf "FAIL  %s\n" "$1"
+    FAILED=1
+}
+
+if [ -n "${DISPLAY:-}" ]; then
+    pass_check "DISPLAY=$DISPLAY"
+else
+    fail_check "DISPLAY is not set"
+fi
+
+for cmd in xauth dbus-run-session bash mktemp; do
+    if command -v "$cmd" >/dev/null 2>&1; then
+        pass_check "$cmd installed"
+    else
+        fail_check "$cmd missing"
+    fi
+done
+
+exit "$FAILED"
+'''
+
+    return run_remote(
         host=args.host,
-        command=["bash", "-lc", " ; ".join(checks)],
+        command=["bash", "-c", script],
         debug=args.debug,
     )
 

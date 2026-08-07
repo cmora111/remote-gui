@@ -3,6 +3,33 @@ import subprocess
 from importlib.resources import files
 
 
+def run_remote(host: str, command: list[str], debug: bool = False) -> int:
+    ssh_command = ["ssh", "-Y"]
+
+    if debug:
+        ssh_command.append("-vv")
+
+    ssh_command.extend([
+        host,
+        shlex.join(command),
+    ])
+
+    if debug:
+        print("SSH command:")
+        print(shlex.join(ssh_command))
+
+    try:
+        result = subprocess.run(ssh_command)
+        return result.returncode
+
+    except FileNotFoundError:
+        print("Error: ssh was not found.")
+        return 127
+
+    except KeyboardInterrupt:
+        print("\nInterrupted.")
+        return 130
+
 def launch(host: str, command: list[str], debug: bool = False) -> int:
     launcher = files("remote_gui").joinpath("launcher.sh")
     remote_command = "bash -s -- " + shlex.join(command)
