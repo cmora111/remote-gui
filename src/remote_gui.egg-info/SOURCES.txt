@@ -3,6 +3,10 @@ README.md
 pyproject.toml
 src/remote_gui/__init__.py
 src/remote_gui/cli.py
+src/remote_gui/launcher.sh
+src/remote_gui/runtime.py
+src/remote_gui/ssh.py
+src/remote_gui/utils.py
 src/remote_gui.egg-info/PKG-INFO
 src/remote_gui.egg-info/SOURCES.txt
 src/remote_gui.egg-info/dependency_links.txt
