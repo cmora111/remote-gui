@@ -1,17 +1,19 @@
 #!/usr/bin/env python3
 
 import argparse
+from importlib.metadata import PackageNotFoundError, version
 
-from remote_gui.ssh import launch
 from remote_gui.ssh import launch, run_remote
 
 
-def build_parser() -> argparse.ArgumentParser:
-    parser = argparse.ArgumentParser(
-        prog="remote-gui",
-        description="Launch remote GUI applications over SSH/X11.",
-    )
+def get_version() -> str:
+    try:
+        return version("remote-gui")
+    except PackageNotFoundError:
+        return "development"
 
+
+def add_common_options(parser: argparse.ArgumentParser) -> None:
     parser.add_argument(
         "--debug",
         action="store_true",
@@ -19,34 +21,25 @@ def build_parser() -> argparse.ArgumentParser:
     )
 
     parser.add_argument(
-        "host",
-        help="SSH host alias, for example: spectrix or alienware",
-    )
-
-    parser.add_argument(
-        "command",
-        nargs=argparse.REMAINDER,
-        help="Application and arguments to run remotely.",
-    )
-
-    return parser
-
-def doctor_main() -> int:
-    parser = argparse.ArgumentParser(
-        prog="remote-gui-doctor",
-        description="Check whether a remote host is ready for remote GUI apps.",
-    )
-
-    parser.add_argument("host", help="SSH host alias")
-
-    parser.add_argument(
-        "--debug",
+        "--dry-run",
         action="store_true",
-        help="Show SSH debugging information.",
+        help="Show what would be executed without running it.",
     )
 
-    args = parser.parse_args()
 
+def run_command(args: argparse.Namespace) -> int:
+    if not args.command:
+        raise SystemExit("You must specify an application to run.")
+
+    return launch(
+        host=args.host,
+        command=args.command,
+        debug=args.debug,
+        dry_run=args.dry_run,
+    )
+
+
+def doctor_command(args: argparse.Namespace) -> int:
     script = r'''
 FAILED=0
 
@@ -80,20 +73,69 @@ exit "$FAILED"
         host=args.host,
         command=["bash", "-c", script],
         debug=args.debug,
+        dry_run=args.dry_run,
     )
+
+
+def build_parser() -> argparse.ArgumentParser:
+    parser = argparse.ArgumentParser(
+        prog="remote-gui",
+        description="Launch remote GUI applications over SSH/X11.",
+    )
+
+    parser.add_argument(
+        "--version",
+        action="version",
+        version=f"%(prog)s {get_version()}",
+    )
+
+    subparsers = parser.add_subparsers(
+        dest="subcommand",
+        required=True,
+    )
+
+    run_parser = subparsers.add_parser(
+        "run",
+        help="Launch a remote GUI application.",
+    )
+
+    add_common_options(run_parser)
+
+    run_parser.add_argument(
+        "host",
+        help="SSH host alias, for example: spectrix or alienware",
+    )
+
+    run_parser.add_argument(
+        "command",
+        nargs=argparse.REMAINDER,
+        help="Application and arguments to run remotely.",
+    )
+
+    run_parser.set_defaults(func=run_command)
+
+    doctor_parser = subparsers.add_parser(
+        "doctor",
+        help="Check whether a remote host is ready for GUI forwarding.",
+    )
+
+    add_common_options(doctor_parser)
+
+    doctor_parser.add_argument(
+        "host",
+        help="SSH host alias to test.",
+    )
+
+    doctor_parser.set_defaults(func=doctor_command)
+
+    return parser
+
 
 def main() -> int:
     parser = build_parser()
     args = parser.parse_args()
 
-    if not args.command:
-        parser.error("You must specify an application to run.")
-
-    return launch(
-        host=args.host,
-        command=args.command,
-        debug=args.debug,
-    )
+    return args.func(args)
 
 
 def tilix_main() -> int:
@@ -102,15 +144,17 @@ def tilix_main() -> int:
         description="Launch Tilix remotely over SSH/X11.",
     )
 
+    add_common_options(parser)
+
     parser.add_argument(
-        "--debug",
-        action="store_true",
-        help="Show SSH debugging information.",
+        "--version",
+        action="version",
+        version=f"%(prog)s {get_version()}",
     )
 
     parser.add_argument(
         "host",
-        help="SSH host alias, for example: spectrix or alienware",
+        help="SSH host alias.",
     )
 
     args = parser.parse_args()
@@ -119,6 +163,7 @@ def tilix_main() -> int:
         host=args.host,
         command=["tilix", "--new-process"],
         debug=args.debug,
+        dry_run=args.dry_run,
     )
 
 
