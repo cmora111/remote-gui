@@ -4,6 +4,7 @@ import argparse
 from pathlib import Path
 from importlib.metadata import PackageNotFoundError, version
 from remote_gui.ssh import launch, run_remote
+from remote_gui.doctor import doctor_command
 
 
 def get_version() -> str:
@@ -76,45 +77,6 @@ def run_command(args: argparse.Namespace) -> int:
         debug=args.debug,
         dry_run=args.dry_run,
     )
-
-
-def doctor_command(args: argparse.Namespace) -> int:
-    script = r'''
-FAILED=0
-
-pass_check() {
-    printf "PASS  %s\n" "$1"
-}
-
-fail_check() {
-    printf "FAIL  %s\n" "$1"
-    FAILED=1
-}
-
-if [ -n "${DISPLAY:-}" ]; then
-    pass_check "DISPLAY=$DISPLAY"
-else
-    fail_check "DISPLAY is not set"
-fi
-
-for cmd in xauth dbus-run-session bash mktemp; do
-    if command -v "$cmd" >/dev/null 2>&1; then
-        pass_check "$cmd installed"
-    else
-        fail_check "$cmd missing"
-    fi
-done
-
-exit "$FAILED"
-'''
-
-    return run_remote(
-        host=args.host,
-        command=["bash", "-c", script],
-        debug=args.debug,
-        dry_run=args.dry_run,
-    )
-
 
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(

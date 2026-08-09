@@ -1,17 +1,13 @@
 import shlex
 import subprocess
 from importlib.resources import files
-from remote_gui.log import configure_logging
-
-log = configure_logging(debug)
-
-log.info("Connecting to %s...", host)
-log.debug("SSH command: %s", shlex.join(ssh_command))
-
 
 def get_launcher():
     return files("remote_gui").joinpath("launcher.sh")
 
+
+#print("Connecting to %s...", host)
+#print("SSH command: %s", shlex.join(ssh_command))
 
 def build_ssh_command(
     host: str,
