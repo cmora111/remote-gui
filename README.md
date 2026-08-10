@@ -1,8 +1,8 @@
 # remote-gui
 
-Launch Linux GUI applications on a remote host over SSH with an isolated runtime environment.
+`remote-gui` launches Linux graphical applications over SSH/X11 while isolating the application's runtime environment.
 
-`remote-gui` was created to solve problems where GTK applications (such as Tilix) hang or behave unexpectedly when launched over standard SSH X11 forwarding.
+It was created to solve issues where applications such as **Tilix** hang or behave unexpectedly when launched using standard SSH X11 forwarding because they interact with the remote desktop's D-Bus session and XDG runtime environment.
 
 Instead of running:
 
@@ -44,6 +44,34 @@ Verify the installation:
 ```bash
 remote-gui --version
 remote-tilix --version
+```
+
+---
+
+## Quick Start
+
+Verify your SSH configuration:
+
+```bash
+remote-gui doctor alienware
+```
+
+Launch an application:
+
+```bash
+remote-gui run alienware xclock
+```
+
+Launch Tilix:
+
+```bash
+remote-tilix alienware
+```
+
+Show the equivalent SSH command without executing it:
+
+```bash
+remote-gui run --dry-run alienware xclock
 ```
 
 ---
@@ -97,6 +125,8 @@ SSH aliases are normally defined in:
 ~/.ssh/config
 ```
 
+---
+
 ## Important: SSH keys are directional
 
 If machine **A** needs to SSH into machine **B**:
@@ -117,6 +147,8 @@ For bidirectional SSH, repeat the process in the opposite direction.
 # Example: alienware -> spectrix
 
 The following steps are performed on **alienware** unless otherwise specified.
+
+---
 
 ## 1. Create an Ed25519 SSH key
 
@@ -147,6 +179,8 @@ Do not copy or share the private key:
 
 Only the `.pub` file should be copied to another machine.
 
+---
+
 ## 2. Install alienware's public key on spectrix
 
 From **alienware**:
@@ -162,6 +196,8 @@ The public key will be added to this file on **spectrix**:
 ```text
 ~/.ssh/authorized_keys
 ```
+
+---
 
 ## 3. Create an SSH alias on alienware
 
