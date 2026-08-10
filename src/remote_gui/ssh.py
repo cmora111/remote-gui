@@ -6,9 +6,6 @@ def get_launcher():
     return files("remote_gui").joinpath("launcher.sh")
 
 
-#print("Connecting to %s...", host)
-#print("SSH command: %s", shlex.join(ssh_command))
-
 def build_ssh_command(
     host: str,
     command: list[str],
@@ -60,6 +57,16 @@ def run_remote(
         print("\nInterrupted.")
         return 130
 
+def print_dry_run(host: str, command: list[str], ssh_command: list[str], launcher) -> None:
+    print(f"Remote host : {host}")
+    print(f"Application : {shlex.join(command)}")
+    print(f"Launcher    : {launcher}\n")
+    print("Equivalent command:\n")
+    print(
+        f"{shlex.join(ssh_command)} \\\n"
+        f"    < {shlex.quote(str(launcher))}"
+    )
+
 
 def launch(
     host: str,
@@ -71,17 +78,21 @@ def launch(
     ssh_command = build_ssh_command(host, command, debug)
 
     if dry_run:
-        print(f"Remote host : {host}")
-        print(f"Application : {shlex.join(command)}")
-        print(f"Launcher    : {launcher}")
-        print()
-        print("Equivalent command:")
-        print()
-        print(
-            f"{shlex.join(ssh_command)} \\\n"
-            f"    < {shlex.quote(str(launcher))}"
-        )
+        print_dry_run(host, command, ssh_command, launcher)
         return 0
+
+#    if dry_run:
+#        print(f"Remote host : {host}")
+#        print(f"Application : {shlex.join(command)}")
+#        print(f"Launcher    : {launcher}")
+#        print()
+#        print("Equivalent command:")
+#        print()
+#        print(
+#            f"{shlex.join(ssh_command)} \\\n"
+#            f"    < {shlex.quote(str(launcher))}"
+#        )
+#        return 0
 
     if debug:
         print("SSH command:")
