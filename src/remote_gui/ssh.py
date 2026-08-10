@@ -81,19 +81,6 @@ def launch(
         print_dry_run(host, command, ssh_command, launcher)
         return 0
 
-#    if dry_run:
-#        print(f"Remote host : {host}")
-#        print(f"Application : {shlex.join(command)}")
-#        print(f"Launcher    : {launcher}")
-#        print()
-#        print("Equivalent command:")
-#        print()
-#        print(
-#            f"{shlex.join(ssh_command)} \\\n"
-#            f"    < {shlex.quote(str(launcher))}"
-#        )
-#        return 0
-
     if debug:
         print("SSH command:")
         print(shlex.join(ssh_command))
