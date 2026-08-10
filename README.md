@@ -50,13 +50,19 @@ remote-tilix --version
 
 ## Quick Start
 
-Verify your SSH configuration:
+Before using `remote-gui`, make sure you can successfully connect to the remote host using SSH with X11 forwarding:
+
+```bash
+ssh -Y alienware xclock
+```
+
+Verify that the remote host meets the requirements:
 
 ```bash
 remote-gui doctor alienware
 ```
 
-Launch an application:
+Launch a graphical application:
 
 ```bash
 remote-gui run alienware xclock
@@ -68,11 +74,19 @@ Launch Tilix:
 remote-tilix alienware
 ```
 
-Show the equivalent SSH command without executing it:
+Preview the command without executing it:
 
 ```bash
 remote-gui run --dry-run alienware xclock
 ```
+
+List your configured SSH host aliases:
+
+```bash
+remote-gui hosts
+```
+
+>**Note: remote-gui assumes your SSH configuration already supports X11 forwarding. If ssh -Y HOST xclock does not work, configure SSH first before using remote-gui.**
 
 ---
 
