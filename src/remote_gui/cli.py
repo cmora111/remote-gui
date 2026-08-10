@@ -2,17 +2,10 @@
 
 import argparse
 from pathlib import Path
-from importlib.metadata import PackageNotFoundError, version
 from remote_gui.ssh import launch, run_remote
 from remote_gui.doctor import doctor_command
 from remote_gui.hosts import hosts_command
-
-
-def get_version() -> str:
-    try:
-        return version("remote-gui")
-    except PackageNotFoundError:
-        return "development"
+from remote_gui.version import get_version
 
 
 def add_common_options(parser: argparse.ArgumentParser) -> None:
