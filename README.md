@@ -1,21 +1,52 @@
 # remote-gui
 
-`remote-gui` launches graphical Linux applications on a remote machine over SSH/X11 while isolating the application's D-Bus and XDG runtime environment.
+Launch Linux GUI applications on a remote host over SSH with an isolated runtime environment.
 
-It was originally created to work around GTK/Tilix hangs caused by remote applications interacting with an existing desktop session's:
+`remote-gui` was created to solve problems where GTK applications (such as Tilix) hang or behave unexpectedly when launched over standard SSH X11 forwarding.
 
-- D-Bus session
-- `XDG_RUNTIME_DIR`
-- GVfs
-- `xdg-desktop-portal`
-
-Example:
+Instead of running:
 
 ```bash
-remote-gui run spectrix xclock
-remote-gui run spectrix gedit
-remote-tilix spectrix
+ssh -Y host application
 ```
+
+`remote-gui` creates an isolated D-Bus session and temporary XDG runtime directory before launching the application.
+
+## Features
+
+- Launch remote GUI applications over SSH/X11
+- Isolated D-Bus session
+- Temporary XDG runtime directory
+- `doctor` command to verify a remote host
+- `hosts` command to list SSH aliases
+- `remote-tilix` convenience launcher
+- `--dry-run` and `--debug` support
+
+---
+
+## Installation
+
+Clone the repository:
+
+```bash
+git clone https://github.com/cmora111/remote-gui.git
+cd remote-gui
+```
+
+Install in editable mode:
+
+```bash
+pipx install --editable .
+```
+
+Verify the installation:
+
+```bash
+remote-gui --version
+remote-tilix --version
+```
+
+---
 
 ## Requirements
 
