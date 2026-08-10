@@ -8,6 +8,8 @@ def build_ssh_command(
     command: list[str],
     debug: bool = False,
 ) -> list[str]:
+    """Build the SSH command used to launch a remote application."""
+
     remote_command = "bash -s -- " + shlex.join(command)
 
     ssh_command = ["ssh", "-Y"]

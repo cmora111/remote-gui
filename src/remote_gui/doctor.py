@@ -2,6 +2,8 @@ from remote_gui.ssh import run_remote
 
 
 def doctor_command(args) -> int:
+    """Run diagnostic checks against a remote host."""
+
     script = r'''
 FAILED=0
 

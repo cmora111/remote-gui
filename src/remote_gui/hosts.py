@@ -2,6 +2,8 @@ from pathlib import Path
 
 
 def parse_hosts(config_text: str) -> list[str]:
+     """Return explicit host aliases from an OpenSSH configuration."""
+
     hosts: set[str] = set()
 
     for line in config_text.splitlines():
