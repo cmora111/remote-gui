@@ -29,3 +29,16 @@ def test_build_ssh_command_debug():
         "spectrix",
         "bash -s -- xclock",
     ]
+
+def test_build_ssh_command_with_arguments():
+    cmd = build_ssh_command(
+        host="spectrix",
+        command=["gedit", "--new-window", "notes.txt"],
+    )
+
+    assert cmd == [
+        "ssh",
+        "-Y",
+        "spectrix",
+        "bash -s -- gedit --new-window notes.txt",
+    ]

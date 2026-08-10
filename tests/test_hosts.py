@@ -22,3 +22,24 @@ Host r400?
         "alienware",
         "spectrix",
     ]
+
+def test_parse_hosts_ignores_patterns_and_comments():
+    config = """
+# Global options
+Host *
+    ForwardAgent yes
+
+Host !internal
+    User mora
+
+Host alienware spectrix
+    User mora
+
+Host r400?
+    User mora
+"""
+
+    assert parse_hosts(config) == [
+        "alienware",
+        "spectrix",
+    ]
