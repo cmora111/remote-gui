@@ -1,16 +1,21 @@
 from remote_gui.hosts import parse_hosts
 
 
-def test_parse_hosts():
+def test_parse_hosts_ignores_wildcards_and_comments():
     config = """
-Host alienware
-    HostName 192.168.1.100
-
-Host spectrix
-    HostName 192.168.1.101
+# Sample config
 
 Host *
     ForwardAgent yes
+
+Host !internal
+    User mora
+
+Host alienware spectrix
+    User mora
+
+Host r400?
+    User mora
 """
 
     assert parse_hosts(config) == [
