@@ -1,6 +1,29 @@
 from pathlib import Path
 
 
+def parse_hosts(config_text: str) -> list[str]:
+    hosts: set[str] = set()
+
+    for line in config_text.splitlines():
+        line = line.strip()
+
+        if not line or line.startswith("#"):
+            continue
+
+        parts = line.split()
+
+        if not parts or parts[0].lower() != "host":
+            continue
+
+        for host in parts[1:]:
+            if "*" in host or "?" in host or host.startswith("!"):
+                continue
+
+            hosts.add(host)
+
+    return sorted(hosts)
+
+
 def hosts_command(args) -> int:
     config_path = Path.home() / ".ssh" / "config"
 
@@ -8,32 +31,16 @@ def hosts_command(args) -> int:
         print(f"No SSH config found at {config_path}")
         return 1
 
-    hosts: set[str] = set()
-
-    with config_path.open("r", encoding="utf-8") as config:
-        for line in config:
-            line = line.strip()
-
-            if not line or line.startswith("#"):
-                continue
-
-            parts = line.split()
-
-            if not parts or parts[0].lower() != "host":
-                continue
-
-            for host in parts[1:]:
-                if "*" in host or "?" in host or host.startswith("!"):
-                    continue
-                hosts.add(host)
+    config_text = config_path.read_text(encoding="utf-8")
+    hosts = parse_hosts(config_text)
 
     if not hosts:
         print("No explicit SSH host aliases found.")
         return 0
 
-    print("Configured SSH hosts:\n")
+    print("Configured SSH hosts:")
 
-    for host in sorted(hosts):
+    for host in hosts:
         print(f"  {host}")
 
     return 0
