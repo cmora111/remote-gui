@@ -1,9 +1,6 @@
 import shlex
 import subprocess
-from importlib.resources import files
-
-def get_launcher():
-    return files("remote_gui").joinpath("launcher.sh")
+from remote_gui.launcher import get_launcher_path
 
 
 def build_ssh_command(
@@ -74,7 +71,7 @@ def launch(
     debug: bool = False,
     dry_run: bool = False,
 ) -> int:
-    launcher = get_launcher()
+    launcher = get_launcher_path()
     ssh_command = build_ssh_command(host, command, debug)
 
     if dry_run:

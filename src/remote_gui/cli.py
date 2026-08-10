@@ -7,6 +7,15 @@ from remote_gui.doctor import doctor_command
 from remote_gui.hosts import hosts_command
 from remote_gui.version import get_version
 
+def print_dry_run(host: str, command: list[str], ssh_command: list[str], launcher) -> None:
+    print(f"Remote host : {host}")
+    print(f"Application : {shlex.join(command)}")
+    print(f"Launcher    : {launcher}\n")
+    print("Equivalent command:\n")
+    print(
+        f"{shlex.join(ssh_command)} \\\n"
+        f"    < {shlex.quote(str(launcher))}"
+    )
 
 def add_common_options(parser: argparse.ArgumentParser) -> None:
     parser.add_argument(
