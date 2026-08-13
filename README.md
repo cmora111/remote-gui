@@ -86,8 +86,6 @@ List your configured SSH host aliases:
 remote-gui hosts
 ```
 
->**Note: remote-gui assumes your SSH configuration already supports X11 forwarding. If ssh -Y HOST xclock does not work, configure SSH first before using remote-gui.**
-
 ---
 
 ## Requirements
