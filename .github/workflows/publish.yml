@@ -1,9 +1,9 @@
-name: Publish to PyPI
+name: Publish to pypi
 
 on:
-  workflow_dispatch
-    release:
-      types: [published]
+  workflow_dispatch:
+  release:
+    types: [published]
 
 jobs:
   publish:
@@ -12,6 +12,9 @@ jobs:
 
     permissions:
       id-token: write
+
+    environment:
+      name: pypi
 
     steps:
       - uses: actions/checkout@v4
